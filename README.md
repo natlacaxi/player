@@ -6,8 +6,8 @@ Plateforme de jeux : **Undercover** et **Pendu**, ouverts en iframe. Installable
 
 1. Crée un dépôt (ex. `talcoplayer`) et envoie-y ces fichiers sur la branche `main`.
 2. Dépôt → **Settings → Secrets and variables → Actions → New repository secret** :
-   - `PLAYER_2` = `https://natlacaxi.github.io/undercover` (Undercover)
-   - `PLAYER_1` = `https://natlacaxi.github.io/pendu` (Pendu)
+   - `PLAYER_2` = `secret` (Undercover)
+   - `PLAYER_1` = `secret` (Pendu)
 3. Dépôt → **Settings → Pages → Source : GitHub Actions**.
 4. Pousse sur `main` (ou lance le workflow à la main) : le site est publié.
 
