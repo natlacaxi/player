@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TalcoPlayer</title>
+<meta name="description" content="TalcoPlayer : Undercover et Pendu, jouables directement dans le navigateur.">
+<meta name="theme-color" content="#12001c">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TalcoPlayer">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{
+  --bg:#12001c; --surface:#1f0533; --line:#3d1960;
+  --text:#f7eeff; --muted:#b99fd2;
+  --violet:#a100ff; --rose:#ff3da8;
+  --font: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg); color:var(--text); font-family:var(--font); line-height:1.5;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--rose); outline-offset:3px}
+
+/* Accueil */
+.home{min-height:100%; display:flex; flex-direction:column; max-width:760px; margin:0 auto; padding:28px 22px 20px}
+.brand{display:flex; align-items:center; gap:14px}
+.brand img{width:64px; height:64px}
+.brand h1{margin:0; font-size:clamp(2rem,8vw,3rem); font-weight:800; letter-spacing:-.02em; line-height:1}
+.lead{color:var(--muted); margin:14px 0 30px; max-width:36ch}
+.tiles{display:grid; gap:16px; grid-template-columns:1fr}
+@media (min-width:620px){.tiles{grid-template-columns:1fr 1fr}}
+.tile{
+  display:flex; flex-direction:column; gap:10px; min-height:190px; padding:22px;
+  border-radius:28px; text-decoration:none; justify-content:flex-end;
+  transition:transform .15s ease;
+}
+.tile:active{transform:scale(.97)}
+.tile svg{width:56px; height:56px; margin-bottom:auto}
+.tile strong{font-size:1.9rem; font-weight:800; letter-spacing:-.01em; line-height:1.1}
+.tile span{font-size:.98rem; opacity:.9}
+.tile.undercover{background:var(--violet); color:#fff}
+.tile.pendu{background:var(--rose); color:var(--bg)}
+
+.install{
+  margin-top:26px; align-self:flex-start; font:inherit; font-weight:700; color:var(--text);
+  background:transparent; border:2px solid var(--line); border-radius:999px; padding:10px 18px; cursor:pointer;
+}
+.install:hover{border-color:var(--violet)}
+.hint{margin:10px 0 0; color:var(--muted); font-size:.92rem; max-width:44ch}
+
+footer{margin-top:auto; padding-top:36px; display:flex; flex-wrap:wrap; gap:6px 18px; font-size:.9rem; color:var(--muted)}
+footer button{font:inherit; color:inherit; background:none; border:0; padding:4px 0; cursor:pointer; text-decoration:underline; text-underline-offset:3px}
+footer button:hover{color:var(--text)}
+
+/* Vue jeu */
+.game{position:fixed; inset:0; z-index:10; display:flex; flex-direction:column; background:var(--bg);
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.bar{display:flex; align-items:center; gap:8px; padding:8px 10px; border-bottom:1px solid var(--line)}
+.bar h2{margin:0 auto 0 6px; font-size:1.05rem; font-weight:800}
+.bar a,.bar button{
+  font:inherit; font-weight:700; font-size:.92rem; color:var(--text); background:var(--surface);
+  border:1px solid var(--line); border-radius:999px; padding:8px 14px; cursor:pointer; text-decoration:none; white-space:nowrap
+}
+.bar a:hover,.bar button:hover{border-color:var(--violet)}
+.frame-wrap{position:relative; flex:1; min-height:0}
+.frame-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0; background:#fff}
+.err{padding:28px 22px; max-width:46ch}
+
+/* Cookies */
+.cookies{
+  position:fixed; z-index:30; left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom));
+  max-width:560px; margin:0 auto; background:var(--surface); border:1px solid var(--line);
+  border-radius:22px; padding:18px; box-shadow:0 12px 40px rgba(0,0,0,.5);
+}
+.cookies p{margin:0 0 14px; font-size:.95rem}
+.cookies .row{display:flex; gap:10px; flex-wrap:wrap}
+.btn{font:inherit; font-weight:700; border-radius:999px; padding:10px 18px; cursor:pointer; border:2px solid var(--violet)}
+.btn.main{background:var(--violet); color:#fff}
+.btn.alt{background:transparent; color:var(--text)}
+.link{font:inherit; color:var(--muted); background:none; border:0; text-decoration:underline; cursor:pointer; padding:10px 4px}
+
+/* Mentions légales */
+dialog{background:var(--surface); color:var(--text); border:1px solid var(--line); border-radius:24px; padding:0; width:min(640px,calc(100% - 24px)); max-height:86dvh}
+dialog::backdrop{background:rgba(8,0,14,.75)}
+.legal-head{position:sticky; top:0; display:flex; justify-content:space-between; align-items:center; padding:16px 20px; background:var(--surface); border-bottom:1px solid var(--line)}
+.legal-head h2{margin:0; font-size:1.2rem}
+.legal-body{padding:6px 20px 22px; font-size:.96rem}
+.legal-body h3{margin:22px 0 6px; font-size:1.02rem}
+.legal-body p{margin:0 0 8px; color:#e3d2f5}
+@media (prefers-reduced-motion:reduce){.tile{transition:none}}
+</style>
+</head>
+<body>
+
+<main class="home" id="home">
+  <div class="brand">
+    <img src="logo.png" alt="" width="64" height="64">
+    <h1>TalcoPlayer</h1>
+  </div>
+  <p class="lead">Deux jeux à lancer entre amis, sans rien installer.</p>
+
+  <nav class="tiles" aria-label="Jeux">
+    <a class="tile undercover" href="#undercover">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M8 26c6-10 14-14 24-14s18 4 24 14c-2 14-10 26-24 26S10 40 8 26Z"/>
+        <circle cx="22" cy="30" r="4" fill="currentColor"/><circle cx="42" cy="30" r="4" fill="currentColor"/>
+        <path d="M26 42h12"/>
+      </svg>
+      <strong>Undercover</strong>
+      <span>Trouve l’infiltré parmi les joueurs.</span>
+    </a>
+    <a class="tile pendu" href="#pendu">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10 58h28M20 58V8h26v10"/>
+        <circle cx="46" cy="25" r="6"/><path d="M46 31v14M46 36l-7 6M46 36l7 6M46 45l-6 9M46 45l6 9"/>
+      </svg>
+      <strong>Pendu</strong>
+      <span>Devine le mot avant qu’il ne soit trop tard.</span>
+    </a>
+  </nav>
+
+  <button class="install" id="install" type="button" hidden>Installer l’application</button>
+  <p class="hint" id="ios-hint" hidden>Sur iPhone : touche le bouton Partager de Safari, puis « Sur l’écran d’accueil ».</p>
+
+  <footer>
+    <button type="button" id="open-legal">Mentions légales</button>
+    <button type="button" id="open-cookies">Gérer les cookies</button>
+  </footer>
+</main>
+
+<section class="game" id="game" hidden aria-label="Jeu">
+  <div class="bar">
+    <a href="#" id="back">Accueil</a>
+    <h2 id="game-title"></h2>
+    <button type="button" id="fs">Plein écran</button>
+    <a id="newtab" target="_blank" rel="noopener" href="#">Nouvel onglet</a>
+  </div>
+  <div class="frame-wrap">
+    <iframe id="frame" title="Jeu" allow="fullscreen; autoplay; clipboard-write" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div class="err" id="err" hidden>
+      <h2>Ce jeu n’est pas disponible</h2>
+      <p>Son lien n’est pas configuré. Vérifie les secrets GitHub <code>PLAYER_2</code> et <code>PLAYER_1</code>, puis relance le déploiement.</p>
+    </div>
+  </div>
+</section>
+
+<div class="cookies" id="cookies" role="region" aria-label="Cookies" hidden>
+  <p>TalcoPlayer utilise un seul cookie technique, pour retenir ton choix. Aucun suivi publicitaire.</p>
+  <div class="row">
+    <button class="btn main" type="button" data-consent="accepted">Accepter</button>
+    <button class="btn alt" type="button" data-consent="refused">Refuser</button>
+    <button class="link" type="button" id="cookies-more">Lire les mentions légales</button>
+  </div>
+</div>
+
+<dialog id="legal" aria-labelledby="legal-title">
+  <div class="legal-head">
+    <h2 id="legal-title">Mentions légales</h2>
+    <button class="btn alt" type="button" id="close-legal">Fermer</button>
+  </div>
+  <div class="legal-body">
+    <h3>Éditeur du site</h3>
+    <p>TalcoPlayer est édité par [À COMPLÉTER : nom ou pseudonyme de l’éditeur].</p>
+    <p>Contact : [À COMPLÉTER : adresse e-mail].</p>
+    <h3>Directeur de la publication</h3>
+    <p>[À COMPLÉTER : nom].</p>
+    <h3>Hébergement</h3>
+    <p>Le site est hébergé par GitHub Pages, GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis.</p>
+    <h3>Jeux intégrés</h3>
+    <p>Undercover et Pendu s’affichent dans TalcoPlayer depuis leurs propres pages. Ils sont indépendants du portail et peuvent enregistrer leurs propres données de jeu dans ton navigateur.</p>
+    <h3 id="cookies-info">Cookies</h3>
+    <p>TalcoPlayer dépose un seul cookie, <code>talco_consent</code>, qui mémorise ton choix pendant 6 mois. Il ne sert ni à te suivre ni à de la publicité. Tu peux changer d’avis à tout moment avec « Gérer les cookies ».</p>
+    <h3>Données personnelles</h3>
+    <p>TalcoPlayer ne collecte aucune donnée personnelle. Pour toute question ou demande, écris à l’adresse de contact ci-dessus.</p>
+    <h3>Propriété intellectuelle</h3>
+    <p>Le nom, le logo et le contenu de TalcoPlayer appartiennent à leur éditeur. Toute reproduction sans accord est interdite.</p>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  var GAMES = {
+    undercover: { name: 'Undercover', url: '__PLAYER_2__' },
+    pendu: { name: 'Pendu', url: '__PLAYER_1__' }
+  };
+  var $ = function (id) { return document.getElementById(id); };
+  var home = $('home'), game = $('game'), frame = $('frame'), err = $('err');
+
+  function valid(u) { return typeof u === 'string' && /^https:\/\//.test(u) && u.indexOf('__') === -1; }
+
+  /* Navigation par hash : #undercover, #pendu */
+  function route() {
+    var id = location.hash.slice(1);
+    var g = GAMES[id];
+    if (!g) {
+      game.hidden = true; home.hidden = false;
+      frame.removeAttribute('src'); frame.dataset.current = '';
+      document.title = 'TalcoPlayer';
+      return;
+    }
+    home.hidden = true; game.hidden = false;
+    $('game-title').textContent = g.name;
+    frame.title = g.name;
+    document.title = g.name + ' · TalcoPlayer';
+    if (valid(g.url)) {
+      err.hidden = true; frame.hidden = false; $('newtab').hidden = false;
+      $('newtab').href = g.url;
+      if (frame.dataset.current !== id) { frame.src = g.url; frame.dataset.current = id; }
+    } else {
+      frame.hidden = true; err.hidden = false; $('newtab').hidden = true;
+      frame.removeAttribute('src'); frame.dataset.current = '';
+    }
+  }
+  window.addEventListener('hashchange', route);
+  $('back').addEventListener('click', function (e) { e.preventDefault(); location.hash = ''; });
+  route();
+
+  /* Plein écran */
+  if (!document.fullscreenEnabled) { $('fs').hidden = true; }
+  $('fs').addEventListener('click', function () {
+    var el = frame.requestFullscreen ? frame : null;
+    if (el) el.requestFullscreen().catch(function () {});
+  });
+
+  /* Cookies */
+  var banner = $('cookies');
+  function getConsent() {
+    var m = document.cookie.match(/(?:^|; )talco_consent=([^;]*)/);
+    return m ? m[1] : null;
+  }
+  function setConsent(v) {
+    document.cookie = 'talco_consent=' + v + '; max-age=15552000; path=/; SameSite=Lax' +
+      (location.protocol === 'https:' ? '; Secure' : '');
+    try { localStorage.setItem('talco_consent', v); } catch (e) {}
+    banner.hidden = true;
+  }
+  if (!getConsent()) banner.hidden = false;
+  banner.addEventListener('click', function (e) {
+    var v = e.target.getAttribute && e.target.getAttribute('data-consent');
+    if (v) setConsent(v);
+  });
+  $('open-cookies').addEventListener('click', function () { banner.hidden = false; });
+
+  /* Mentions légales */
+  var legal = $('legal');
+  function openLegal() { if (legal.showModal) legal.showModal(); else legal.setAttribute('open', ''); }
+  $('open-legal').addEventListener('click', openLegal);
+  $('cookies-more').addEventListener('click', openLegal);
+  $('close-legal').addEventListener('click', function () { legal.close(); });
+  legal.addEventListener('click', function (e) { if (e.target === legal) legal.close(); });
+
+  /* Installation (PWA) */
+  var installBtn = $('install'), iosHint = $('ios-hint'), deferred = null;
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (!standalone && isIOS) installBtn.hidden = false;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); deferred = e; installBtn.hidden = false;
+  });
+  installBtn.addEventListener('click', function () {
+    if (deferred) {
+      deferred.prompt();
+      deferred.userChoice.then(function () { deferred = null; installBtn.hidden = true; });
+    } else {
+      iosHint.hidden = !iosHint.hidden;
+    }
+  });
+  window.addEventListener('appinstalled', function () { installBtn.hidden = true; iosHint.hidden = true; });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+})();
+</script>
+</body>
+</html>

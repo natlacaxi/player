@@ -1,0 +1,21 @@
+{
+  "name": "TalcoPlayer",
+  "short_name": "TalcoPlayer",
+  "description": "Undercover et Pendu, jouables en un tap.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#12001c",
+  "theme_color": "#12001c",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Undercover", "url": "./#undercover", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Pendu", "url": "./#pendu", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ]
+}
