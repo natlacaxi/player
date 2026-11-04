@@ -51,6 +51,8 @@ a{color:inherit}
 .tile span{font-size:.98rem; opacity:.9}
 .tile.undercover{background:var(--violet); color:#fff}
 .tile.pendu{background:var(--rose); color:var(--bg)}
+.tile.cerebro{background:#e9d5ff; color:var(--bg)}
+@media (min-width:620px){.tile.cerebro{grid-column:1/-1; min-height:150px}}
 
 .install{
   margin-top:26px; align-self:flex-start; font:inherit; font-weight:700; color:var(--text);
@@ -108,7 +110,7 @@ dialog::backdrop{background:rgba(8,0,14,.75)}
     <img src="logo.png" alt="" width="64" height="64">
     <h1>TalcoPlayer</h1>
   </div>
-  <p class="lead">Deux jeux à lancer entre amis, sans rien installer.</p>
+  <p class="lead">Trois jeux à lancer entre amis, sans rien installer.</p>
 
   <nav class="tiles" aria-label="Jeux">
     <a class="tile undercover" href="#undercover">
@@ -127,6 +129,15 @@ dialog::backdrop{background:rgba(8,0,14,.75)}
       </svg>
       <strong>Pendu</strong>
       <span>Devine le mot avant qu’il ne soit trop tard.</span>
+    </a>
+    <a class="tile cerebro" href="#cerebro">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M32 10c-3-4-12-4-15 2-6 1-9 8-6 13-3 5 0 12 6 13 2 6 10 8 15 4"/>
+        <path d="M32 10c3-4 12-4 15 2 6 1 9 8 6 13 3 5 0 12-6 13-2 6-10 8-15 4"/>
+        <path d="M32 10v42M20 26h8M36 38h8"/>
+      </svg>
+      <strong>Cerebro</strong>
+      <span>Lance une partie de Cerebro.</span>
     </a>
   </nav>
 
@@ -150,7 +161,7 @@ dialog::backdrop{background:rgba(8,0,14,.75)}
     <iframe id="frame" title="Jeu" allow="fullscreen; autoplay; clipboard-write" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
     <div class="err" id="err" hidden>
       <h2>Ce jeu n’est pas disponible</h2>
-      <p>Son lien n’est pas configuré. Vérifie les secrets GitHub <code>PLAYER_2</code> et <code>PLAYER_1</code>, puis relance le déploiement.</p>
+      <p>Son lien n’est pas configuré. Vérifie les secrets GitHub <code>PLAYER_1</code>, <code>PLAYER_2</code> et <code>PLAYER_3</code>, puis relance le déploiement.</p>
     </div>
   </div>
 </section>
@@ -192,7 +203,8 @@ dialog::backdrop{background:rgba(8,0,14,.75)}
 (function () {
   var GAMES = {
     undercover: { name: 'Undercover', url: '__PLAYER_2__' },
-    pendu: { name: 'Pendu', url: '__PLAYER_1__' }
+    pendu: { name: 'Pendu', url: '__PLAYER_1__' },
+    cerebro: { name: 'Cerebro', url: '__PLAYER_3__' }
   };
   var $ = function (id) { return document.getElementById(id); };
   var home = $('home'), game = $('game'), frame = $('frame'), err = $('err');

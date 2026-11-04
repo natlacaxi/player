@@ -16,6 +16,7 @@
   ],
   "shortcuts": [
     { "name": "Undercover", "url": "./#undercover", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
-    { "name": "Pendu", "url": "./#pendu", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+    { "name": "Pendu", "url": "./#pendu", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Cerebro", "url": "./#cerebro", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
   ]
 }
