@@ -27,14 +27,15 @@ jobs:
         env:
           PLAYER_2: ${{ secrets.PLAYER_2 }}
           PLAYER_1: ${{ secrets.PLAYER_1 }}
+          PLAYER_3: ${{ secrets.PLAYER_3 }}
         run: |
-          if [ -z "$PLAYER_2" ] || [ -z "$PLAYER_1" ]; then
-            echo "Secrets PLAYER_2 et PLAYER_1 requis"; exit 1
+          if [ -z "$PLAYER_1" ] || [ -z "$PLAYER_2" ] || [ -z "$PLAYER_3" ]; then
+            echo "Secrets PLAYER_1, PLAYER_2 et PLAYER_3 requis"; exit 1
           fi
           mkdir _site
           rsync -a --exclude='.git*' --exclude='_site' --exclude='README.md' ./ _site/
           esc() { printf '%s' "$1" | sed 's/[&|\\]/\\&/g'; }
-          sed -i "s|__PLAYER_2__|$(esc "$PLAYER_2")|; s|__PLAYER_1__|$(esc "$PLAYER_1")|" _site/index.html
+          sed -i "s|__PLAYER_2__|$(esc "$PLAYER_2")|; s|__PLAYER_1__|$(esc "$PLAYER_1")|; s|__PLAYER_3__|$(esc "$PLAYER_3")|" _site/index.html
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
@@ -42,3 +43,4 @@ jobs:
           path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
+        
